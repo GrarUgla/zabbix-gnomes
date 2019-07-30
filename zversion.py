@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import configparser as ConfigParser
+import configparser
 import sys
 import os
 import os.path
@@ -40,7 +40,7 @@ password = ""
 api = ""
 noverify = False
 timeout = None
-
+C
 # Define commandline arguments
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                  description='Prints Zabbix API version info.', epilog="""
@@ -65,7 +65,7 @@ parser.add_argument('-c', '--config', help='Config file location (defaults to $H
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 
 # if configuration argument is set, test the config file
 if args.config:
