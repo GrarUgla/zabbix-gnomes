@@ -12,16 +12,18 @@ from pyzabbix import ZabbixAPI
 
 
 # define config helper function
-def ConfigSectionMap(section):
+def config_section_map(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
         try:
             dict1[option] = Config.get(section, option)
             if dict1[option] == -1:
-                DebugPrint("skip: %s" % option)
-        except:
-            print("exception on %s!" % option)
+                # DebugPrint("skip: %s" % option)
+                print("skip: %s" % option)
+        except Exception as error:
+            # print("exception on %s!" % option)
+            print("exception on {}: {}!".format(option, error))
             dict1[option] = None
     return dict1
 
@@ -40,7 +42,7 @@ password = ""
 api = ""
 noverify = False
 timeout = None
-C
+
 # Define commandline arguments
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                  description='Prints Zabbix API version info.', epilog="""
@@ -79,11 +81,11 @@ else:
 
 # try to load available settings from config file
 try:
-    username = ConfigSectionMap("Zabbix API")['username']
-    password = ConfigSectionMap("Zabbix API")['password']
-    api = ConfigSectionMap("Zabbix API")['api']
-    timeout = int(ConfigSectionMap("Zabbix API")['timeout'])
-    noverify = bool(distutils.util.strtobool(ConfigSectionMap("Zabbix API")["no_verify"]))
+    username = config_section_map("Zabbix API")['username']
+    password = config_section_map("Zabbix API")['password']
+    api = config_section_map("Zabbix API")['api']
+    timeout = int(config_section_map("Zabbix API")['timeout'])
+    noverify = bool(distutils.util.strtobool(config_section_map("Zabbix API")["no_verify"]))
 except:
     pass
 
@@ -117,13 +119,13 @@ if not api:
     sys.exit("Error: API URL is not set")
 
 # Setup Zabbix API connection
-zapi = ZabbixAPI(api)
+zapi = ZabbixAPI(url=api, user=username, password=password)
 
 if noverify:
     zapi.session.verify = False
 
 # Login to the Zabbix API
-zapi.login(username, password)
+# zapi.login(username, password)
 
 ##################################
 # Start actual API logic
